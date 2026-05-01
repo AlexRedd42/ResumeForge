@@ -13,6 +13,8 @@
     <!-- Bootstrap is intentionally loaded from a local vendor folder to avoid CDN usage. -->
     <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.min.css">
     <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js" defer></script>
+    <script src="/js/jobs.js" defer></script>
+    <script src="/js/skills.js" defer></script>
     <script src="/js/app.js" defer></script>
 </head>
 <body class="bg-light d-flex flex-column min-vh-100">
@@ -50,12 +52,131 @@
     </header>
 
     <main class="container-fluid flex-grow-1 py-4" id="mainContent" tabindex="-1">
-        <section class="row justify-content-center" aria-labelledby="headingDashboard">
+        <section class="row justify-content-center" id="sectionDashboard" data-section="dashboard" aria-labelledby="headingDashboard">
             <div class="col-12 col-lg-10">
                 <div class="card">
                     <div class="card-body">
                         <h1 class="h3" id="headingDashboard">ResumeForge Dashboard</h1>
                         <p class="mb-0">Use the navigation to manage resume content and prepare a tailored resume.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="row justify-content-center d-none" id="sectionJobs" data-section="jobs" aria-labelledby="headingJobs">
+            <div class="col-12 col-xl-10">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3">
+                            <div>
+                                <h1 class="h3 mb-1" id="headingJobs">Job Management</h1>
+                                <p class="mb-0">Create jobs, select a job, and manage responsibilities for that job.</p>
+                            </div>
+                        </div>
+
+                        <div class="alert d-none" id="divJobsMessage" role="status" aria-live="polite"></div>
+
+                        <div class="row g-4">
+                            <div class="col-12 col-lg-5">
+                                <h2 class="h5">Add Job</h2>
+                                <form id="formJob" novalidate>
+                                    <div class="mb-3">
+                                        <label class="form-label" for="txtCompanyName">Company Name</label>
+                                        <input class="form-control" type="text" id="txtCompanyName" name="companyName" aria-label="Company name" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label" for="txtJobTitle">Job Title</label>
+                                        <input class="form-control" type="text" id="txtJobTitle" name="jobTitle" aria-label="Job title" required>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 col-md-6 mb-3">
+                                            <label class="form-label" for="dtStartDate">Start Date</label>
+                                            <input class="form-control" type="date" id="dtStartDate" name="startDate" aria-label="Start date" required>
+                                        </div>
+                                        <div class="col-12 col-md-6 mb-3">
+                                            <label class="form-label" for="dtEndDate">End Date</label>
+                                            <input class="form-control" type="date" id="dtEndDate" name="endDate" aria-label="End date">
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-primary" type="submit">Save Job</button>
+                                </form>
+                            </div>
+
+                            <div class="col-12 col-lg-7">
+                                <h2 class="h5">Saved Jobs</h2>
+                                <div class="list-group mb-4" id="divJobsList" aria-live="polite"></div>
+
+                                <div class="border rounded p-3">
+                                    <h2 class="h5" id="headingJobDetails">Job Responsibilities</h2>
+                                    <p class="mb-3" id="pSelectedJobName">Select a job to manage its responsibilities.</p>
+                                    <form class="mb-3" id="formJobDetail" novalidate>
+                                        <div class="mb-3">
+                                            <label class="form-label" for="txtJobDetailDescription">Responsibility Description</label>
+                                            <textarea class="form-control" id="txtJobDetailDescription" name="description" rows="3" aria-label="Responsibility description" required></textarea>
+                                        </div>
+                                        <button class="btn btn-primary" type="submit" id="btnSaveJobDetail">Add Responsibility</button>
+                                    </form>
+                                    <ul class="list-group" id="ulJobDetailsList" aria-live="polite"></ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="row justify-content-center d-none" id="sectionSkills" data-section="skills" aria-labelledby="headingSkills">
+            <div class="col-12 col-xl-10">
+                <div class="card">
+                    <div class="card-body">
+                        <h1 class="h3" id="headingSkills">Skills</h1>
+                        <p>Store skills by category so they can be reused later in tailored resumes.</p>
+
+                        <div class="alert d-none" id="divSkillsMessage" role="status" aria-live="polite"></div>
+
+                        <div class="row g-4">
+                            <div class="col-12 col-lg-5">
+                                <h2 class="h5">Add Skill</h2>
+                                <form id="formSkill" novalidate>
+                                    <div class="mb-3">
+                                        <label class="form-label" for="txtSkillName">Skill Name</label>
+                                        <input class="form-control" type="text" id="txtSkillName" name="name" aria-label="Skill name" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label" for="txtSkillCategory">Category</label>
+                                        <input class="form-control" type="text" id="txtSkillCategory" name="category" aria-label="Skill category" required>
+                                    </div>
+                                    <button class="btn btn-primary" type="submit">Save Skill</button>
+                                </form>
+                            </div>
+
+                            <div class="col-12 col-lg-7">
+                                <h2 class="h5">Saved Skills</h2>
+                                <div id="divSkillsList" aria-live="polite"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="row justify-content-center d-none" id="sectionBuilder" data-section="builder" aria-labelledby="headingBuilder">
+            <div class="col-12 col-lg-10">
+                <div class="card">
+                    <div class="card-body">
+                        <h1 class="h3" id="headingBuilder">Resume Builder</h1>
+                        <p class="mb-0">Resume generation will be built in a later step.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="row justify-content-center d-none" id="sectionPreview" data-section="preview" aria-labelledby="headingPreview">
+            <div class="col-12 col-lg-10">
+                <div class="card">
+                    <div class="card-body">
+                        <h1 class="h3" id="headingPreview">Resume Preview</h1>
+                        <p class="mb-0">Print and web resume previews will be built in a later step.</p>
                     </div>
                 </div>
             </div>

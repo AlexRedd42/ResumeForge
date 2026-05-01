@@ -3,6 +3,8 @@ const objPath = require('path');
 require('dotenv').config();
 
 const objJobsRouter = require('./api/jobs');
+const objJobDetailsRouter = require('./api/job-details');
+const objSkillsRouter = require('./api/skills');
 require('./db/database');
 
 const appResumeForge = objExpress();
@@ -19,6 +21,8 @@ appResumeForge.use('/vendor', objExpress.static(objPath.join(__dirname, 'vendor'
 
 // Keep every application API route under /api so the frontend has one clear API root.
 appResumeForge.use('/api/jobs', objJobsRouter);
+appResumeForge.use('/api/job-details', objJobDetailsRouter);
+appResumeForge.use('/api/skills', objSkillsRouter);
 
 // Send the SPA shell for the site root. Future client-side navigation stays in index.html.
 appResumeForge.get('/', (req, res) => {

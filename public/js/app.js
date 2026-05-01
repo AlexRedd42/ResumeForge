@@ -1,29 +1,9 @@
 const objViews = {
-    dashboard: {
-        strHeadingID: 'headingDashboard',
-        strHeading: 'ResumeForge Dashboard',
-        strBody: 'Use the navigation to manage resume content and prepare a tailored resume.'
-    },
-    jobs: {
-        strHeadingID: 'headingJobs',
-        strHeading: 'Job Management',
-        strBody: 'The jobs API starter route is ready. Job forms and responsibility details will be added in the next step.'
-    },
-    skills: {
-        strHeadingID: 'headingSkills',
-        strHeading: 'Skills, Certifications, and Awards',
-        strBody: 'This section will store categorized skills, certifications, and awards.'
-    },
-    builder: {
-        strHeadingID: 'headingBuilder',
-        strHeading: 'Resume Builder',
-        strBody: 'This section will let users select jobs, details, skills, certifications, and awards for a tailored resume.'
-    },
-    preview: {
-        strHeadingID: 'headingPreview',
-        strHeading: 'Resume Preview',
-        strBody: 'This section will display web and print-friendly resume layouts.'
-    }
+    dashboard: 'sectionDashboard',
+    jobs: 'sectionJobs',
+    skills: 'sectionSkills',
+    builder: 'sectionBuilder',
+    preview: 'sectionPreview'
 };
 
 function getRequestedView() {
@@ -39,7 +19,7 @@ function getRequestedView() {
 function setActiveNavigation(strViewName) {
     const arrNavigationLinks = document.querySelectorAll('[data-view]');
 
-    // Each navigation link is updated so screen readers and sighted users receive the same active-state cue.
+    // Navigation state is updated whenever the hash changes so keyboard and screen reader users know the current view.
     arrNavigationLinks.forEach((elNavigationLink) => {
         const boolIsCurrentView = elNavigationLink.dataset.view === strViewName;
         elNavigationLink.classList.toggle('active', boolIsCurrentView);
@@ -52,32 +32,40 @@ function setActiveNavigation(strViewName) {
     });
 }
 
-function renderView(strViewName) {
-    const objView = objViews[strViewName];
+async function loadActiveViewDataAsync(strViewName) {
+    if (strViewName === 'jobs' && window.loadJobsViewAsync) {
+        await window.loadJobsViewAsync();
+    }
+
+    if (strViewName === 'skills' && window.loadSkillsViewAsync) {
+        await window.loadSkillsViewAsync();
+    }
+}
+
+async function renderViewAsync(strViewName) {
+    const arrSections = document.querySelectorAll('[data-section]');
     const elMainContent = document.getElementById('mainContent');
 
-    // The SPA swaps a small semantic section into the main landmark instead of loading a new page.
-    elMainContent.innerHTML = `
-        <section class="row justify-content-center" aria-labelledby="${objView.strHeadingID}">
-            <div class="col-12 col-lg-10">
-                <div class="card">
-                    <div class="card-body">
-                        <h1 class="h3" id="${objView.strHeadingID}">${objView.strHeading}</h1>
-                        <p class="mb-0">${objView.strBody}</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-    `;
+    // The SPA keeps all view markup in index.html and switches visibility with Bootstrap utility classes.
+    arrSections.forEach((elSection) => {
+        const boolIsCurrentSection = elSection.dataset.section === strViewName;
+        elSection.classList.toggle('d-none', !boolIsCurrentSection);
+    });
 
     setActiveNavigation(strViewName);
+    await loadActiveViewDataAsync(strViewName);
     elMainContent.focus();
 }
 
-function handleRouteChange() {
+async function handleRouteChangeAsync() {
     const strViewName = getRequestedView();
-    renderView(strViewName);
+    await renderViewAsync(strViewName);
 }
 
-window.addEventListener('hashchange', handleRouteChange);
-document.addEventListener('DOMContentLoaded', handleRouteChange);
+window.addEventListener('hashchange', async () => {
+    await handleRouteChangeAsync();
+});
+
+document.addEventListener('DOMContentLoaded', async () => {
+    await handleRouteChangeAsync();
+});
