@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+    <title>ResumeForge</title>
+
+    <!-- Bootstrap is intentionally loaded from a local vendor folder to avoid CDN usage. -->
+    <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.min.css">
+    <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js" defer></script>
+    <script src="/js/app.js" defer></script>
+</head>
+<body class="bg-light d-flex flex-column min-vh-100">
+    <header class="bg-dark text-white">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark" aria-label="Primary navigation">
+            <div class="container-fluid">
+                <a class="navbar-brand fw-bold d-flex align-items-center" href="#dashboard" aria-label="ResumeForge dashboard">
+                    <span class="border border-light rounded px-2 py-1 me-2" aria-hidden="true">RF</span>
+                    ResumeForge
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMainMenu" aria-controls="navMainMenu" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navMainMenu">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#dashboard" data-view="dashboard">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#jobs" data-view="jobs">Jobs</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#skills" data-view="skills">Skills</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#builder" data-view="builder">Builder</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#preview" data-view="preview">Preview</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container-fluid flex-grow-1 py-4" id="mainContent" tabindex="-1">
+        <section class="row justify-content-center" aria-labelledby="headingDashboard">
+            <div class="col-12 col-lg-10">
+                <div class="card">
+                    <div class="card-body">
+                        <h1 class="h3" id="headingDashboard">ResumeForge Dashboard</h1>
+                        <p class="mb-0">Use the navigation to manage resume content and prepare a tailored resume.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-dark text-white text-center py-3 mt-auto">
+        <p class="mb-0">ResumeForge</p>
+    </footer>
+</body>
+</html>
