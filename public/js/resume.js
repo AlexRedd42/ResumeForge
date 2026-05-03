@@ -56,7 +56,6 @@ async function ensureActiveResumeAsync() {
 
     if (arrResumes.length > 0) {
         strActiveResumeID = arrResumes[0].resumeId;
-        document.getElementById('txtResumeName').value = arrResumes[0].name;
         return;
     }
 
@@ -70,7 +69,6 @@ async function ensureActiveResumeAsync() {
     const objCreatedResume = await parseResumeJsonResponseAsync(objCreateResponse);
 
     strActiveResumeID = objCreatedResume.resumeId;
-    document.getElementById('txtResumeName').value = 'Tailored Resume';
 }
 
 async function loadResumeSourceDataAsync() {
@@ -242,7 +240,6 @@ function renderResumeSelectionControls() {
 
 function renderResumePreview() {
     const elResumePreview = document.getElementById('divResumePreview');
-    const strResumeName = document.getElementById('txtResumeName').value.trim() || 'Tailored Resume';
     const arrSelectedJobs = arrResumeAllJobs.filter((objJob) => objResumeSelectedJobIDs.has(objJob.jobId));
     const arrSelectedSkills = arrResumeAllSkills.filter((objSkill) => objResumeSelectedSkillIDs.has(objSkill.skillId));
     const arrContactItems = [objResumePersonalInfo.email, objResumePersonalInfo.phone, objResumePersonalInfo.linkedin].filter((strValue) => strValue);
@@ -254,7 +251,7 @@ function renderResumePreview() {
 
     const elNameHeading = document.createElement('h1');
     elNameHeading.className = 'display-6 fw-bold mb-1';
-    elNameHeading.textContent = objResumePersonalInfo.fullName || strResumeName;
+    elNameHeading.textContent = objResumePersonalInfo.fullName || 'Resume';
 
     const elContactLine = document.createElement('p');
     elContactLine.className = 'mb-0';
@@ -357,22 +354,6 @@ async function saveResumeSelectionsAsync(objEvent) {
     objEvent.preventDefault();
     clearResumeMessage();
 
-    const strResumeName = document.getElementById('txtResumeName').value.trim();
-
-    if (!strResumeName) {
-        showResumeMessage('Resume name is required.', 'danger');
-        return;
-    }
-
-    const objResumeResponse = await fetch('/api/resumes', {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ resumeId: strActiveResumeID, name: strResumeName })
-    });
-    await parseResumeJsonResponseAsync(objResumeResponse);
-
     const arrSelectedJobIDs = Array.from(objResumeSelectedJobIDs);
     const arrSelectedDetailIDs = Array.from(objResumeSelectedDetailIDs);
     const arrSelectedSkillIDs = Array.from(objResumeSelectedSkillIDs);
@@ -432,7 +413,6 @@ async function loadResumePreviewViewAsync() {
 
 function initializeResume() {
     const elResumeForm = document.getElementById('formResume');
-    const elResumeName = document.getElementById('txtResumeName');
     const elPrintResumeButton = document.getElementById('btnPrintResume');
 
     // The builder saves checkbox selections to join tables, then the same in-memory selection renders a live preview.
@@ -442,10 +422,6 @@ function initializeResume() {
         } catch (error) {
             showResumeMessage(error.message, 'danger');
         }
-    });
-
-    elResumeName.addEventListener('input', () => {
-        renderResumePreview();
     });
 
     elPrintResumeButton.addEventListener('click', () => {

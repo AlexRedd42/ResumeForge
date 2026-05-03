@@ -10,6 +10,7 @@ const objResumeJobsRouter = require('./api/resume-jobs');
 const objResumeJobDetailsRouter = require('./api/resume-job-details');
 const objResumeSkillsRouter = require('./api/resume-skills');
 const objPersonalInfoRouter = require('./api/personal-info');
+const objAiRouter = require('./api/ai');
 require('./db/database');
 
 const appResumeForge = objExpress();
@@ -33,6 +34,7 @@ appResumeForge.use('/api/resume-jobs', objResumeJobsRouter);
 appResumeForge.use('/api/resume-job-details', objResumeJobDetailsRouter);
 appResumeForge.use('/api/resume-skills', objResumeSkillsRouter);
 appResumeForge.use('/api/personal-info', objPersonalInfoRouter);
+appResumeForge.use('/api/ai', objAiRouter);
 
 // Send the SPA shell for the site root. Future client-side navigation stays in index.html.
 appResumeForge.get('/', (req, res) => {

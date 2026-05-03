@@ -125,6 +125,7 @@
                                             <div id="divJobDetailEditor" role="textbox" aria-labelledby="lblJobDetailContent" aria-describedby="pJobDetailHelp" aria-multiline="true"></div>
                                         </div>
                                         <button class="btn btn-primary" type="submit" id="btnSaveJobDetail">Add Responsibility</button>
+                                        <button class="btn btn-outline-primary" type="button" id="btnImproveJobDetail" aria-label="Improve responsibility with AI">✨ Improve with AI</button>
                                         <button class="btn btn-outline-secondary d-none" type="button" id="btnCancelJobDetailEdit">Cancel Edit</button>
                                     </form>
                                     <ul class="list-group" id="ulJobDetailsList" aria-live="polite"></ul>
@@ -216,10 +217,6 @@
                         <div class="alert d-none" id="divResumeMessage" role="status" aria-live="polite"></div>
 
                         <form id="formResume" class="mb-4" novalidate>
-                            <div class="mb-3">
-                                <label class="form-label" for="txtResumeName">Resume Name</label>
-                                <input class="form-control" type="text" id="txtResumeName" name="resumeName" aria-label="Resume name" value="Tailored Resume" required>
-                            </div>
                             <button class="btn btn-primary" type="submit">Save Selections</button>
                         </form>
 
@@ -262,5 +259,33 @@
     <footer class="bg-dark text-white text-center py-3 mt-auto no-print">
         <p class="mb-0">ResumeForge</p>
     </footer>
+
+    <div class="modal fade" id="modalAiImprovement" tabindex="-1" aria-labelledby="headingAiImprovement" aria-describedby="pAiImprovementDescription">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title h5" id="headingAiImprovement">Review AI Improvement</h2>
+                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close AI improvement review"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="pAiImprovementDescription">Compare the original content with the improved version before accepting changes.</p>
+                    <div class="row g-3">
+                        <section class="col-12 col-md-6" aria-labelledby="headingOriginalContent">
+                            <h3 class="h6" id="headingOriginalContent">Original Content</h3>
+                            <div class="border rounded p-3 bg-light" id="divAiOriginalContent"></div>
+                        </section>
+                        <section class="col-12 col-md-6" aria-labelledby="headingImprovedContent">
+                            <h3 class="h6" id="headingImprovedContent">Improved Content</h3>
+                            <div class="border rounded p-3 bg-light" id="divAiImprovedContent"></div>
+                        </section>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
+                    <button class="btn btn-primary" type="button" id="btnAcceptAiImprovement">Accept Improvement</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

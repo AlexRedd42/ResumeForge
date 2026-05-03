@@ -349,4 +349,6 @@ function initializeJobs() {
 }
 
 window.loadJobsViewAsync = loadJobsViewAsync;
+window.showJobsMessage = showJobsMessage;
+window.clearJobsMessage = clearJobsMessage;
 document.addEventListener('DOMContentLoaded', initializeJobs);
