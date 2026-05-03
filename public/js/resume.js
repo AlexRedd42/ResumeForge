@@ -8,6 +8,7 @@ let objResumePersonalInfo = {
     phone: '',
     linkedin: '',
     schoolName: '',
+    major: '',
     gpa: ''
 };
 let objResumeSelectedJobIDs = new Set();
@@ -327,6 +328,13 @@ function renderResumePreview() {
 
         elEducationSection.appendChild(elEducationHeading);
         elEducationSection.appendChild(elSchoolName);
+
+        if (objResumePersonalInfo.major) {
+            const elMajor = document.createElement('p');
+            elMajor.className = 'mb-1';
+            elMajor.textContent = objResumePersonalInfo.major;
+            elEducationSection.appendChild(elMajor);
+        }
 
         if (objResumePersonalInfo.gpa) {
             const elGpa = document.createElement('p');

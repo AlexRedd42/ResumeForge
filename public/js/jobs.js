@@ -48,7 +48,7 @@ function renderJobsList() {
         elJobRow.className = 'list-group-item';
 
         const elContentWrapper = document.createElement('div');
-        elContentWrapper.className = 'd-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2';
+        elContentWrapper.className = 'd-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3';
 
         const elJobButton = document.createElement('button');
         elJobButton.type = 'button';
@@ -62,10 +62,11 @@ function renderJobsList() {
         });
 
         const elJobDates = document.createElement('small');
-        elJobDates.className = 'text-body-secondary';
+        elJobDates.className = 'text-body-secondary mt-2 ms-md-4';
         elJobDates.textContent = `${objJob.startDate} to ${objJob.endDate || 'Present'}`;
 
         const elTextWrapper = document.createElement('div');
+        elTextWrapper.className = 'd-flex flex-column flex-md-row align-items-md-center';
         elTextWrapper.appendChild(elJobButton);
         elTextWrapper.appendChild(elJobDates);
 
@@ -79,7 +80,7 @@ function renderJobsList() {
         });
 
         if (objJob.jobId === strSelectedJobID) {
-            elJobRow.classList.add('active');
+            elJobRow.classList.add('bg-dark-subtle', 'text-dark');
             elJobRow.setAttribute('aria-current', 'true');
         }
 

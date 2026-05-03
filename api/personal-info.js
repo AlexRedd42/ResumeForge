@@ -36,6 +36,7 @@ objPersonalInfoRouter.get('/', async (req, res) => {
                 phone AS phone,
                 linkedin AS linkedin,
                 school_name AS schoolName,
+                major AS major,
                 gpa AS gpa
             FROM personal_info
             WHERE id = 1
@@ -50,6 +51,7 @@ objPersonalInfoRouter.get('/', async (req, res) => {
                 phone: "",
                 linkedin: "",
                 schoolName: "",
+                major: "",
                 gpa: ""
             });
         }
@@ -68,6 +70,7 @@ objPersonalInfoRouter.put('/', async (req, res) => {
         const strPhone = sanitizeString(req.body.phone);
         const strLinkedIn = sanitizeString(req.body.linkedin);
         const strSchoolName = sanitizeString(req.body.schoolName);
+        const strMajor = sanitizeString(req.body.major);
         const strGpa = sanitizeString(req.body.gpa);
 
         // All fields are optional for drafts, but every submitted value must be a string and valid when present.
@@ -81,19 +84,20 @@ objPersonalInfoRouter.put('/', async (req, res) => {
 
         const strQuery = `
             INSERT INTO personal_info
-                (id, full_name, email, phone, linkedin, school_name, gpa)
+                (id, full_name, email, phone, linkedin, school_name, major, gpa)
             VALUES
-                (1, ?, ?, ?, ?, ?, ?)
+                (1, ?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT(id) DO UPDATE SET
                 full_name = excluded.full_name,
                 email = excluded.email,
                 phone = excluded.phone,
                 linkedin = excluded.linkedin,
                 school_name = excluded.school_name,
+                major = excluded.major,
                 gpa = excluded.gpa
         `;
 
-        await runAsync(strQuery, [strFullName, strEmail, strPhone, strLinkedIn, strSchoolName, strGpa]);
+        await runAsync(strQuery, [strFullName, strEmail, strPhone, strLinkedIn, strSchoolName, strMajor, strGpa]);
 
         return res.status(200).json({ outcome: "success", message: "Personal information saved successfully" });
     } catch (error) {

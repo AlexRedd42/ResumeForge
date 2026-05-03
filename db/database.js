@@ -81,6 +81,7 @@ dbResumeForge.serialize(() => {
             phone TEXT,
             linkedin TEXT,
             school_name TEXT,
+            major TEXT,
             gpa TEXT
         )
     `;
@@ -149,21 +150,19 @@ function migrateJobDetailsTable() {
 }
 
 function migratePersonalInfoTable() {
-    dbResumeForge.all("PRAGMA table_info(personal_info)", [], (error, arrColumns) => {
-        if (error) {
-            console.error('Personal info migration error:', error.message);
-            return;
-        }
+    const arrAlterQueries = [
+        "ALTER TABLE personal_info ADD COLUMN school_name TEXT",
+        "ALTER TABLE personal_info ADD COLUMN major TEXT",
+        "ALTER TABLE personal_info ADD COLUMN gpa TEXT"
+    ];
 
-        const arrColumnNames = arrColumns.map((objColumn) => objColumn.name);
-
-        if (!arrColumnNames.includes('school_name')) {
-            dbResumeForge.run("ALTER TABLE personal_info ADD COLUMN school_name TEXT");
-        }
-
-        if (!arrColumnNames.includes('gpa')) {
-            dbResumeForge.run("ALTER TABLE personal_info ADD COLUMN gpa TEXT");
-        }
+    // Older databases may already have some columns. Duplicate-column errors are expected and safe to ignore.
+    arrAlterQueries.forEach((strQuery) => {
+        dbResumeForge.run(strQuery, [], (error) => {
+            if (error && !error.message.includes('duplicate column name')) {
+                console.error('Personal info migration error:', error.message);
+            }
+        });
     });
 }
 

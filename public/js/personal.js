@@ -28,6 +28,7 @@ function fillPersonalForm(objPersonalInfo) {
     document.getElementById('txtPhone').value = objPersonalInfo.phone || '';
     document.getElementById('txtLinkedIn').value = objPersonalInfo.linkedin || '';
     document.getElementById('txtSchoolName').value = objPersonalInfo.schoolName || '';
+    document.getElementById('txtMajor').value = objPersonalInfo.major || '';
     document.getElementById('txtGpa').value = objPersonalInfo.gpa || '';
 }
 
@@ -48,6 +49,7 @@ async function savePersonalInfoAsync(objEvent) {
         phone: document.getElementById('txtPhone').value.trim(),
         linkedin: document.getElementById('txtLinkedIn').value.trim(),
         schoolName: document.getElementById('txtSchoolName').value.trim(),
+        major: document.getElementById('txtMajor').value.trim(),
         gpa: document.getElementById('txtGpa').value.trim()
     };
 
