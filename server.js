@@ -5,6 +5,10 @@ require('dotenv').config();
 const objJobsRouter = require('./api/jobs');
 const objJobDetailsRouter = require('./api/job-details');
 const objSkillsRouter = require('./api/skills');
+const objResumesRouter = require('./api/resumes');
+const objResumeJobsRouter = require('./api/resume-jobs');
+const objResumeJobDetailsRouter = require('./api/resume-job-details');
+const objResumeSkillsRouter = require('./api/resume-skills');
 require('./db/database');
 
 const appResumeForge = objExpress();
@@ -23,6 +27,10 @@ appResumeForge.use('/vendor', objExpress.static(objPath.join(__dirname, 'vendor'
 appResumeForge.use('/api/jobs', objJobsRouter);
 appResumeForge.use('/api/job-details', objJobDetailsRouter);
 appResumeForge.use('/api/skills', objSkillsRouter);
+appResumeForge.use('/api/resumes', objResumesRouter);
+appResumeForge.use('/api/resume-jobs', objResumeJobsRouter);
+appResumeForge.use('/api/resume-job-details', objResumeJobDetailsRouter);
+appResumeForge.use('/api/resume-skills', objResumeSkillsRouter);
 
 // Send the SPA shell for the site root. Future client-side navigation stays in index.html.
 appResumeForge.get('/', (req, res) => {

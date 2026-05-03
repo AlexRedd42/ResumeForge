@@ -40,6 +40,14 @@ async function loadActiveViewDataAsync(strViewName) {
     if (strViewName === 'skills' && window.loadSkillsViewAsync) {
         await window.loadSkillsViewAsync();
     }
+
+    if (strViewName === 'builder' && window.loadResumeBuilderViewAsync) {
+        await window.loadResumeBuilderViewAsync();
+    }
+
+    if (strViewName === 'preview' && window.loadResumePreviewViewAsync) {
+        await window.loadResumePreviewViewAsync();
+    }
 }
 
 async function renderViewAsync(strViewName) {

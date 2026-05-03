@@ -1,5 +1,6 @@
 let arrJobs = [];
 let strSelectedJobID = '';
+let strEditingDetailID = '';
 
 function showJobsMessage(strMessage, strType) {
     const elMessage = document.getElementById('divJobsMessage');
@@ -195,22 +196,52 @@ function renderJobDetailsList(arrJobDetails) {
         const elJobDetailItem = document.createElement('li');
         elJobDetailItem.className = 'list-group-item d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2';
 
-        const elDescription = document.createElement('span');
-        elDescription.textContent = objJobDetail.description;
+        const elContent = document.createElement('div');
+        elContent.innerHTML = objJobDetail.content;
+
+        const elButtonWrapper = document.createElement('div');
+        elButtonWrapper.className = 'd-flex gap-2';
+
+        const elEditButton = document.createElement('button');
+        elEditButton.type = 'button';
+        elEditButton.className = 'btn btn-outline-primary btn-sm';
+        elEditButton.textContent = 'Edit';
+        elEditButton.setAttribute('aria-label', 'Edit responsibility');
+        elEditButton.addEventListener('click', () => {
+            beginEditJobDetail(objJobDetail);
+        });
 
         const elDeleteButton = document.createElement('button');
         elDeleteButton.type = 'button';
         elDeleteButton.className = 'btn btn-outline-danger btn-sm';
         elDeleteButton.textContent = 'Delete';
-        elDeleteButton.setAttribute('aria-label', `Delete responsibility ${objJobDetail.description}`);
+        elDeleteButton.setAttribute('aria-label', 'Delete responsibility');
         elDeleteButton.addEventListener('click', async () => {
             await deleteJobDetailAsync(objJobDetail.detailId);
         });
 
-        elJobDetailItem.appendChild(elDescription);
-        elJobDetailItem.appendChild(elDeleteButton);
+        elButtonWrapper.appendChild(elEditButton);
+        elButtonWrapper.appendChild(elDeleteButton);
+        elJobDetailItem.appendChild(elContent);
+        elJobDetailItem.appendChild(elButtonWrapper);
         elJobDetailsList.appendChild(elJobDetailItem);
     });
+}
+
+function resetJobDetailForm() {
+    strEditingDetailID = '';
+    window.clearJobDetailQuillContent();
+
+    document.getElementById('btnSaveJobDetail').textContent = 'Add Responsibility';
+    document.getElementById('btnCancelJobDetailEdit').classList.add('d-none');
+}
+
+function beginEditJobDetail(objJobDetail) {
+    strEditingDetailID = objJobDetail.detailId;
+    window.setJobDetailQuillContent(objJobDetail.content);
+
+    document.getElementById('btnSaveJobDetail').textContent = 'Update Responsibility';
+    document.getElementById('btnCancelJobDetailEdit').classList.remove('d-none');
 }
 
 async function loadJobDetailsAsync() {
@@ -236,28 +267,32 @@ async function saveJobDetailAsync(objEvent) {
     }
 
     const elForm = document.getElementById('formJobDetail');
-    const objFormData = new FormData(elForm);
     const objJobDetail = {
         jobId: strSelectedJobID,
-        description: objFormData.get('description').trim()
+        content: window.getJobDetailQuillContent()
     };
 
-    if (!objJobDetail.description) {
-        showJobsMessage('Responsibility description is required.', 'danger');
+    if (window.isJobDetailQuillContentEmpty()) {
+        showJobsMessage('Responsibility content is required.', 'danger');
         return;
     }
 
+    const objRequestBody = strEditingDetailID
+        ? { detailId: strEditingDetailID, jobId: objJobDetail.jobId, content: objJobDetail.content }
+        : objJobDetail;
+
     const objResponse = await fetch('/api/job-details', {
-        method: 'POST',
+        method: strEditingDetailID ? 'PUT' : 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(objJobDetail)
+        body: JSON.stringify(objRequestBody)
     });
 
     await parseJsonResponseAsync(objResponse);
 
     elForm.reset();
+    resetJobDetailForm();
     showJobsMessage('Responsibility saved successfully.', 'success');
     await loadJobDetailsAsync();
 }
@@ -270,6 +305,7 @@ async function deleteJobDetailAsync(strDetailID) {
     });
 
     await parseJsonResponseAsync(objResponse);
+    resetJobDetailForm();
     showJobsMessage('Responsibility deleted successfully.', 'success');
     await loadJobDetailsAsync();
 }
@@ -286,6 +322,9 @@ async function loadJobsViewAsync() {
 function initializeJobs() {
     const elJobForm = document.getElementById('formJob');
     const elJobDetailForm = document.getElementById('formJobDetail');
+    const elCancelJobDetailEditButton = document.getElementById('btnCancelJobDetailEdit');
+
+    window.initializeJobDetailQuill();
 
     // Each form owns one submit handler so the SPA can save data without a page refresh.
     elJobForm.addEventListener('submit', async (objEvent) => {
@@ -302,6 +341,10 @@ function initializeJobs() {
         } catch (error) {
             showJobsMessage(error.message, 'danger');
         }
+    });
+
+    elCancelJobDetailEditButton.addEventListener('click', () => {
+        resetJobDetailForm();
     });
 }
 

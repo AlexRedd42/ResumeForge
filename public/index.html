@@ -12,9 +12,13 @@
 
     <!-- Bootstrap is intentionally loaded from a local vendor folder to avoid CDN usage. -->
     <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/vendor/quill/quill.snow.css">
     <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js" defer></script>
+    <script src="/vendor/quill/quill.min.js" defer></script>
+    <script src="/js/quill.js" defer></script>
     <script src="/js/jobs.js" defer></script>
     <script src="/js/skills.js" defer></script>
+    <script src="/js/resume.js" defer></script>
     <script src="/js/app.js" defer></script>
 </head>
 <body class="bg-light d-flex flex-column min-vh-100">
@@ -111,10 +115,12 @@
                                     <p class="mb-3" id="pSelectedJobName">Select a job to manage its responsibilities.</p>
                                     <form class="mb-3" id="formJobDetail" novalidate>
                                         <div class="mb-3">
-                                            <label class="form-label" for="txtJobDetailDescription">Responsibility Description</label>
-                                            <textarea class="form-control" id="txtJobDetailDescription" name="description" rows="3" aria-label="Responsibility description" required></textarea>
+                                            <label class="form-label" id="lblJobDetailContent" for="divJobDetailEditor">Responsibility Content</label>
+                                            <p class="small text-body-secondary" id="pJobDetailHelp">Use the editor toolbar to format this resume bullet point.</p>
+                                            <div id="divJobDetailEditor" role="textbox" aria-labelledby="lblJobDetailContent" aria-describedby="pJobDetailHelp" aria-multiline="true"></div>
                                         </div>
                                         <button class="btn btn-primary" type="submit" id="btnSaveJobDetail">Add Responsibility</button>
+                                        <button class="btn btn-outline-secondary d-none" type="button" id="btnCancelJobDetailEdit">Cancel Edit</button>
                                     </form>
                                     <ul class="list-group" id="ulJobDetailsList" aria-live="polite"></ul>
                                 </div>
@@ -161,22 +167,49 @@
         </section>
 
         <section class="row justify-content-center d-none" id="sectionBuilder" data-section="builder" aria-labelledby="headingBuilder">
-            <div class="col-12 col-lg-10">
+            <div class="col-12 col-xl-10">
                 <div class="card">
                     <div class="card-body">
                         <h1 class="h3" id="headingBuilder">Resume Builder</h1>
-                        <p class="mb-0">Resume generation will be built in a later step.</p>
+                        <p>Select the jobs, responsibilities, and skills to include in the live resume preview.</p>
+
+                        <div class="alert d-none" id="divResumeMessage" role="status" aria-live="polite"></div>
+
+                        <form id="formResume" class="mb-4" novalidate>
+                            <div class="mb-3">
+                                <label class="form-label" for="txtResumeName">Resume Name</label>
+                                <input class="form-control" type="text" id="txtResumeName" name="resumeName" aria-label="Resume name" value="Tailored Resume" required>
+                            </div>
+                            <button class="btn btn-primary" type="submit">Save Selections</button>
+                        </form>
+
+                        <div class="row g-4">
+                            <div class="col-12 col-lg-4">
+                                <h2 class="h5">Jobs</h2>
+                                <div id="divResumeJobs" aria-live="polite"></div>
+                            </div>
+                            <div class="col-12 col-lg-4">
+                                <h2 class="h5">Responsibilities</h2>
+                                <div id="divResumeJobDetails" aria-live="polite"></div>
+                            </div>
+                            <div class="col-12 col-lg-4">
+                                <h2 class="h5">Skills</h2>
+                                <div id="divResumeSkills" aria-live="polite"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
         <section class="row justify-content-center d-none" id="sectionPreview" data-section="preview" aria-labelledby="headingPreview">
-            <div class="col-12 col-lg-10">
+            <div class="col-12 col-xl-10">
                 <div class="card">
                     <div class="card-body">
                         <h1 class="h3" id="headingPreview">Resume Preview</h1>
-                        <p class="mb-0">Print and web resume previews will be built in a later step.</p>
+                        <div id="divResumePreview" aria-live="polite">
+                            <p class="mb-0">Save selections in the builder to see a live resume preview.</p>
+                        </div>
                     </div>
                 </div>
             </div>

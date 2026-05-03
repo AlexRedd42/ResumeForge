@@ -12,6 +12,11 @@ function sanitizeString(strValue) {
     return strValue.trim();
 }
 
+function isContentEmpty(strContent) {
+    const strPlainText = strContent.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
+    return !strPlainText;
+}
+
 objJobDetailsRouter.get('/', async (req, res) => {
     try {
         const strJobID = sanitizeString(req.query.jobId);
@@ -24,10 +29,11 @@ objJobDetailsRouter.get('/', async (req, res) => {
             SELECT
                 detail_id AS detailId,
                 job_id AS jobId,
-                description AS description
+                content AS content,
+                created_at AS createdAt
             FROM job_details
             WHERE job_id = ?
-            ORDER BY rowid ASC
+            ORDER BY created_at ASC, rowid ASC
         `;
 
         const arrJobDetails = await allAsync(strQuery, [strJobID]);
@@ -42,10 +48,12 @@ objJobDetailsRouter.post('/', async (req, res) => {
     try {
         const strDetailID = objCrypto.randomUUID();
         const strJobID = sanitizeString(req.body.jobId);
-        const strDescription = sanitizeString(req.body.description);
+        const strContent = sanitizeString(req.body.content);
+        const strCreatedAt = new Date().toISOString();
 
-        if (!strJobID || !strDescription) {
-            return res.status(400).json({ outcome: "error", message: "Job ID and description must be provided" });
+        // Quill HTML is stored as TEXT so formatting is preserved for later resume preview rendering.
+        if (!strJobID || !strContent || isContentEmpty(strContent)) {
+            return res.status(400).json({ outcome: "error", message: "Job ID and formatted content must be provided" });
         }
 
         const strFindJobQuery = "SELECT job_id FROM jobs WHERE job_id = ?";
@@ -57,12 +65,12 @@ objJobDetailsRouter.post('/', async (req, res) => {
 
         const strQuery = `
             INSERT INTO job_details
-                (detail_id, job_id, description)
+                (detail_id, job_id, content, created_at)
             VALUES
-                (?, ?, ?)
+                (?, ?, ?, ?)
         `;
 
-        await runAsync(strQuery, [strDetailID, strJobID, strDescription]);
+        await runAsync(strQuery, [strDetailID, strJobID, strContent, strCreatedAt]);
 
         return res.status(201).json({ outcome: "success", message: "Job detail created successfully", detailId: strDetailID });
     } catch (error) {
@@ -75,10 +83,10 @@ objJobDetailsRouter.put('/', async (req, res) => {
     try {
         const strDetailID = sanitizeString(req.body.detailId);
         const strJobID = sanitizeString(req.body.jobId);
-        const strDescription = sanitizeString(req.body.description);
+        const strContent = sanitizeString(req.body.content);
 
-        if (!strDetailID || !strJobID || !strDescription) {
-            return res.status(400).json({ outcome: "error", message: "Detail ID, job ID, and description must be provided" });
+        if (!strDetailID || !strJobID || !strContent || isContentEmpty(strContent)) {
+            return res.status(400).json({ outcome: "error", message: "Detail ID, job ID, and formatted content must be provided" });
         }
 
         const strFindJobQuery = "SELECT job_id FROM jobs WHERE job_id = ?";
@@ -91,11 +99,11 @@ objJobDetailsRouter.put('/', async (req, res) => {
         const strQuery = `
             UPDATE job_details
             SET job_id = ?,
-                description = ?
+                content = ?
             WHERE detail_id = ?
         `;
 
-        const objResult = await runAsync(strQuery, [strJobID, strDescription, strDetailID]);
+        const objResult = await runAsync(strQuery, [strJobID, strContent, strDetailID]);
 
         if (objResult.intChanges === 0) {
             return res.status(404).json({ outcome: "error", message: "Job detail not found" });
