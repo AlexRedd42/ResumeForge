@@ -2,6 +2,12 @@ let strActiveResumeID = '';
 let arrResumeAllJobs = [];
 let arrResumeAllJobDetails = [];
 let arrResumeAllSkills = [];
+let objResumePersonalInfo = {
+    fullName: '',
+    email: '',
+    phone: '',
+    linkedin: ''
+};
 let objResumeSelectedJobIDs = new Set();
 let objResumeSelectedDetailIDs = new Set();
 let objResumeSelectedSkillIDs = new Set();
@@ -95,6 +101,11 @@ async function loadSavedResumeSelectionsAsync() {
     objResumeSelectedJobIDs = new Set(arrSelectedJobs.map((objSelection) => objSelection.jobId));
     objResumeSelectedDetailIDs = new Set(arrSelectedDetails.map((objSelection) => objSelection.detailId));
     objResumeSelectedSkillIDs = new Set(arrSelectedSkills.map((objSelection) => objSelection.skillId));
+}
+
+async function loadResumePersonalInfoAsync() {
+    const objResponse = await fetch('/api/personal-info');
+    objResumePersonalInfo = await parseResumeJsonResponseAsync(objResponse);
 }
 
 function renderResumeJobsSelection() {
@@ -234,13 +245,28 @@ function renderResumePreview() {
     const strResumeName = document.getElementById('txtResumeName').value.trim() || 'Tailored Resume';
     const arrSelectedJobs = arrResumeAllJobs.filter((objJob) => objResumeSelectedJobIDs.has(objJob.jobId));
     const arrSelectedSkills = arrResumeAllSkills.filter((objSkill) => objResumeSelectedSkillIDs.has(objSkill.skillId));
+    const arrContactItems = [objResumePersonalInfo.email, objResumePersonalInfo.phone, objResumePersonalInfo.linkedin].filter((strValue) => strValue);
 
     elResumePreview.innerHTML = '';
 
-    const elHeading = document.createElement('h2');
-    elHeading.className = 'h4';
-    elHeading.textContent = strResumeName;
-    elResumePreview.appendChild(elHeading);
+    const elHeaderSection = document.createElement('section');
+    elHeaderSection.className = 'text-center border-bottom pb-3 mb-4';
+
+    const elNameHeading = document.createElement('h1');
+    elNameHeading.className = 'display-6 fw-bold mb-1';
+    elNameHeading.textContent = objResumePersonalInfo.fullName || strResumeName;
+
+    const elContactLine = document.createElement('p');
+    elContactLine.className = 'mb-0';
+    elContactLine.textContent = arrContactItems.join(' | ');
+
+    elHeaderSection.appendChild(elNameHeading);
+
+    if (arrContactItems.length > 0) {
+        elHeaderSection.appendChild(elContactLine);
+    }
+
+    elResumePreview.appendChild(elHeaderSection);
 
     if (arrSelectedJobs.length === 0 && arrSelectedSkills.length === 0) {
         const elEmptyMessage = document.createElement('p');
@@ -251,53 +277,79 @@ function renderResumePreview() {
     }
 
     if (arrSelectedJobs.length > 0) {
+        const elExperienceSection = document.createElement('section');
+        elExperienceSection.setAttribute('aria-labelledby', 'headingPreviewExperience');
+
         const elExperienceHeading = document.createElement('h3');
-        elExperienceHeading.className = 'h5 mt-4';
+        elExperienceHeading.className = 'h5 text-uppercase border-bottom pb-1';
+        elExperienceHeading.id = 'headingPreviewExperience';
         elExperienceHeading.textContent = 'Experience';
-        elResumePreview.appendChild(elExperienceHeading);
-    }
+        elExperienceSection.appendChild(elExperienceHeading);
 
-    arrSelectedJobs.forEach((objJob) => {
-        const elJobWrapper = document.createElement('section');
-        elJobWrapper.className = 'mb-3';
+        arrSelectedJobs.forEach((objJob) => {
+            const elJobWrapper = document.createElement('section');
+            elJobWrapper.className = 'mb-3';
 
-        const elJobHeading = document.createElement('h4');
-        elJobHeading.className = 'h6 mb-1';
-        elJobHeading.textContent = `${objJob.jobTitle} - ${objJob.companyName}`;
+            const elJobHeading = document.createElement('h4');
+            elJobHeading.className = 'h6 fw-bold mb-1';
+            elJobHeading.textContent = objJob.jobTitle;
 
-        const elJobDates = document.createElement('p');
-        elJobDates.className = 'mb-2';
-        elJobDates.textContent = `${objJob.startDate} to ${objJob.endDate || 'Present'}`;
+            const elJobDates = document.createElement('p');
+            elJobDates.className = 'mb-2';
+            elJobDates.textContent = `${objJob.companyName} | ${objJob.startDate} to ${objJob.endDate || 'Present'}`;
 
-        elJobWrapper.appendChild(elJobHeading);
-        elJobWrapper.appendChild(elJobDates);
+            elJobWrapper.appendChild(elJobHeading);
+            elJobWrapper.appendChild(elJobDates);
 
-        arrResumeAllJobDetails
-            .filter((objJobDetail) => objJobDetail.jobId === objJob.jobId && objResumeSelectedDetailIDs.has(objJobDetail.detailId))
-            .forEach((objJobDetail) => {
-                const elDetailWrapper = document.createElement('div');
-                elDetailWrapper.innerHTML = objJobDetail.content;
-                elJobWrapper.appendChild(elDetailWrapper);
-            });
+            arrResumeAllJobDetails
+                .filter((objJobDetail) => objJobDetail.jobId === objJob.jobId && objResumeSelectedDetailIDs.has(objJobDetail.detailId))
+                .forEach((objJobDetail) => {
+                    const elDetailWrapper = document.createElement('div');
+                    elDetailWrapper.innerHTML = objJobDetail.content;
+                    elJobWrapper.appendChild(elDetailWrapper);
+                });
 
-        elResumePreview.appendChild(elJobWrapper);
-    });
-
-    if (arrSelectedSkills.length > 0) {
-        const elSkillsHeading = document.createElement('h3');
-        elSkillsHeading.className = 'h5 mt-4';
-        elSkillsHeading.textContent = 'Skills';
-        elResumePreview.appendChild(elSkillsHeading);
-
-        const elSkillsList = document.createElement('ul');
-
-        arrSelectedSkills.forEach((objSkill) => {
-            const elSkillItem = document.createElement('li');
-            elSkillItem.textContent = `${objSkill.category}: ${objSkill.name}`;
-            elSkillsList.appendChild(elSkillItem);
+            elExperienceSection.appendChild(elJobWrapper);
         });
 
-        elResumePreview.appendChild(elSkillsList);
+        elResumePreview.appendChild(elExperienceSection);
+    }
+
+    if (arrSelectedSkills.length > 0) {
+        const elSkillsSection = document.createElement('section');
+        elSkillsSection.setAttribute('aria-labelledby', 'headingPreviewSkills');
+
+        const elSkillsHeading = document.createElement('h3');
+        elSkillsHeading.className = 'h5 text-uppercase border-bottom pb-1 mt-4';
+        elSkillsHeading.id = 'headingPreviewSkills';
+        elSkillsHeading.textContent = 'Skills';
+        elSkillsSection.appendChild(elSkillsHeading);
+
+        const objGroupedSkills = {};
+
+        arrSelectedSkills.forEach((objSkill) => {
+            if (!objGroupedSkills[objSkill.category]) {
+                objGroupedSkills[objSkill.category] = [];
+            }
+
+            objGroupedSkills[objSkill.category].push(objSkill.name);
+        });
+
+        Object.keys(objGroupedSkills).forEach((strCategory) => {
+            const elSkillGroup = document.createElement('p');
+            elSkillGroup.className = 'mb-1';
+
+            const elCategoryName = document.createElement('strong');
+            elCategoryName.textContent = `${strCategory}: `;
+
+            const elSkillNames = document.createTextNode(objGroupedSkills[strCategory].join(', '));
+
+            elSkillGroup.appendChild(elCategoryName);
+            elSkillGroup.appendChild(elSkillNames);
+            elSkillsSection.appendChild(elSkillGroup);
+        });
+
+        elResumePreview.appendChild(elSkillsSection);
     }
 }
 
@@ -360,6 +412,7 @@ async function loadResumeBuilderViewAsync() {
     try {
         clearResumeMessage();
         await ensureActiveResumeAsync();
+        await loadResumePersonalInfoAsync();
         await loadResumeSourceDataAsync();
         await loadSavedResumeSelectionsAsync();
         renderResumeSelectionControls();
@@ -371,6 +424,7 @@ async function loadResumeBuilderViewAsync() {
 
 async function loadResumePreviewViewAsync() {
     await ensureActiveResumeAsync();
+    await loadResumePersonalInfoAsync();
     await loadResumeSourceDataAsync();
     await loadSavedResumeSelectionsAsync();
     renderResumePreview();
@@ -379,6 +433,7 @@ async function loadResumePreviewViewAsync() {
 function initializeResume() {
     const elResumeForm = document.getElementById('formResume');
     const elResumeName = document.getElementById('txtResumeName');
+    const elPrintResumeButton = document.getElementById('btnPrintResume');
 
     // The builder saves checkbox selections to join tables, then the same in-memory selection renders a live preview.
     elResumeForm.addEventListener('submit', async (objEvent) => {
@@ -391,6 +446,10 @@ function initializeResume() {
 
     elResumeName.addEventListener('input', () => {
         renderResumePreview();
+    });
+
+    elPrintResumeButton.addEventListener('click', () => {
+        window.print();
     });
 }
 

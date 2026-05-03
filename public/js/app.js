@@ -2,6 +2,7 @@ const objViews = {
     dashboard: 'sectionDashboard',
     jobs: 'sectionJobs',
     skills: 'sectionSkills',
+    personal: 'sectionPersonal',
     builder: 'sectionBuilder',
     preview: 'sectionPreview'
 };
@@ -39,6 +40,10 @@ async function loadActiveViewDataAsync(strViewName) {
 
     if (strViewName === 'skills' && window.loadSkillsViewAsync) {
         await window.loadSkillsViewAsync();
+    }
+
+    if (strViewName === 'personal' && window.loadPersonalInfoViewAsync) {
+        await window.loadPersonalInfoViewAsync();
     }
 
     if (strViewName === 'builder' && window.loadResumeBuilderViewAsync) {

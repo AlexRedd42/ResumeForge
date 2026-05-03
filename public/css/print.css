@@ -1,0 +1,15 @@
+@media print {
+    body {
+        background: white !important;
+    }
+
+    #divResumePreview {
+        box-shadow: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .no-print {
+        display: none !important;
+    }
+}

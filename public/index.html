@@ -13,16 +13,18 @@
     <!-- Bootstrap is intentionally loaded from a local vendor folder to avoid CDN usage. -->
     <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="/vendor/quill/quill.snow.css">
+    <link rel="stylesheet" href="/css/print.css">
     <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js" defer></script>
     <script src="/vendor/quill/quill.min.js" defer></script>
     <script src="/js/quill.js" defer></script>
     <script src="/js/jobs.js" defer></script>
     <script src="/js/skills.js" defer></script>
+    <script src="/js/personal.js" defer></script>
     <script src="/js/resume.js" defer></script>
     <script src="/js/app.js" defer></script>
 </head>
 <body class="bg-light d-flex flex-column min-vh-100">
-    <header class="bg-dark text-white">
+    <header class="bg-dark text-white no-print">
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark" aria-label="Primary navigation">
             <div class="container-fluid">
                 <a class="navbar-brand fw-bold d-flex align-items-center" href="#dashboard" aria-label="ResumeForge dashboard">
@@ -42,6 +44,9 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#skills" data-view="skills">Skills</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#personal" data-view="personal">Personal Info</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#builder" data-view="builder">Builder</a>
@@ -166,6 +171,41 @@
             </div>
         </section>
 
+        <section class="row justify-content-center d-none" id="sectionPersonal" data-section="personal" aria-labelledby="headingPersonal">
+            <div class="col-12 col-xl-10">
+                <div class="card">
+                    <div class="card-body">
+                        <h1 class="h3" id="headingPersonal">Personal Information</h1>
+                        <p>Save the contact information that appears at the top of the resume preview.</p>
+
+                        <div class="alert d-none" id="divPersonalMessage" role="status" aria-live="polite"></div>
+
+                        <form id="formPersonalInfo" novalidate>
+                            <div class="row">
+                                <div class="col-12 col-md-6 mb-3">
+                                    <label class="form-label" for="txtFullName">Full Name</label>
+                                    <input class="form-control" type="text" id="txtFullName" name="fullName" aria-label="Full name">
+                                </div>
+                                <div class="col-12 col-md-6 mb-3">
+                                    <label class="form-label" for="txtEmail">Email</label>
+                                    <input class="form-control" type="email" id="txtEmail" name="email" aria-label="Email address">
+                                </div>
+                                <div class="col-12 col-md-6 mb-3">
+                                    <label class="form-label" for="txtPhone">Phone</label>
+                                    <input class="form-control" type="tel" id="txtPhone" name="phone" aria-label="Phone number">
+                                </div>
+                                <div class="col-12 col-md-6 mb-3">
+                                    <label class="form-label" for="txtLinkedIn">LinkedIn URL</label>
+                                    <input class="form-control" type="url" id="txtLinkedIn" name="linkedin" aria-label="LinkedIn URL">
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" type="submit">Save Personal Information</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section class="row justify-content-center d-none" id="sectionBuilder" data-section="builder" aria-labelledby="headingBuilder">
             <div class="col-12 col-xl-10">
                 <div class="card">
@@ -177,8 +217,8 @@
 
                         <form id="formResume" class="mb-4" novalidate>
                             <div class="mb-3">
-                                <label class="form-label" for="txtResumeName">Your Full Name</label>
-                                <input class="form-control" type="text" id="txtResumeName" name="resumeName" aria-label="Your Full name" value="John Doe" required>
+                                <label class="form-label" for="txtResumeName">Resume Name</label>
+                                <input class="form-control" type="text" id="txtResumeName" name="resumeName" aria-label="Resume name" value="Tailored Resume" required>
                             </div>
                             <button class="btn btn-primary" type="submit">Save Selections</button>
                         </form>
@@ -206,8 +246,11 @@
             <div class="col-12 col-xl-10">
                 <div class="card">
                     <div class="card-body">
-                        <h1 class="h3" id="headingPreview">Resume Preview</h1>
-                        <div id="divResumePreview" aria-live="polite">
+                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3 no-print">
+                            <h1 class="h3 mb-2 mb-md-0" id="headingPreview">Resume Preview</h1>
+                            <button class="btn btn-primary" type="button" id="btnPrintResume">Print Resume</button>
+                        </div>
+                        <div class="border rounded p-4 bg-white" id="divResumePreview" aria-live="polite">
                             <p class="mb-0">Save selections in the builder to see a live resume preview.</p>
                         </div>
                     </div>
@@ -216,7 +259,7 @@
         </section>
     </main>
 
-    <footer class="bg-dark text-white text-center py-3 mt-auto">
+    <footer class="bg-dark text-white text-center py-3 mt-auto no-print">
         <p class="mb-0">ResumeForge</p>
     </footer>
 </body>

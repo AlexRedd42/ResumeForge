@@ -73,6 +73,16 @@ dbResumeForge.serialize(() => {
         )
     `;
 
+    const strCreatePersonalInfoTable = `
+        CREATE TABLE IF NOT EXISTS personal_info (
+            id INTEGER PRIMARY KEY CHECK (id = 1),
+            full_name TEXT,
+            email TEXT,
+            phone TEXT,
+            linkedin TEXT
+        )
+    `;
+
     dbResumeForge.run(strCreateJobsTable);
     dbResumeForge.run(strCreateSkillsTable);
     migrateJobDetailsTable();
@@ -80,6 +90,7 @@ dbResumeForge.serialize(() => {
     dbResumeForge.run(strCreateResumeJobsTable);
     dbResumeForge.run(strCreateResumeJobDetailsTable);
     dbResumeForge.run(strCreateResumeSkillsTable);
+    dbResumeForge.run(strCreatePersonalInfoTable);
 });
 
 function migrateJobDetailsTable() {
