@@ -1,5 +1,4 @@
 const objViews = {
-    dashboard: 'sectionDashboard',
     jobs: 'sectionJobs',
     skills: 'sectionSkills',
     personal: 'sectionPersonal',
@@ -14,7 +13,7 @@ function getRequestedView() {
         return strHashValue;
     }
 
-    return 'dashboard';
+    return 'builder';
 }
 
 function setActiveNavigation(strViewName) {

@@ -79,7 +79,9 @@ dbResumeForge.serialize(() => {
             full_name TEXT,
             email TEXT,
             phone TEXT,
-            linkedin TEXT
+            linkedin TEXT,
+            school_name TEXT,
+            gpa TEXT
         )
     `;
 
@@ -91,6 +93,7 @@ dbResumeForge.serialize(() => {
     dbResumeForge.run(strCreateResumeJobDetailsTable);
     dbResumeForge.run(strCreateResumeSkillsTable);
     dbResumeForge.run(strCreatePersonalInfoTable);
+    migratePersonalInfoTable();
 });
 
 function migrateJobDetailsTable() {
@@ -142,6 +145,25 @@ function migrateJobDetailsTable() {
             dbResumeForge.run('ALTER TABLE job_details_new RENAME TO job_details');
             dbResumeForge.run('PRAGMA foreign_keys = ON');
         });
+    });
+}
+
+function migratePersonalInfoTable() {
+    dbResumeForge.all("PRAGMA table_info(personal_info)", [], (error, arrColumns) => {
+        if (error) {
+            console.error('Personal info migration error:', error.message);
+            return;
+        }
+
+        const arrColumnNames = arrColumns.map((objColumn) => objColumn.name);
+
+        if (!arrColumnNames.includes('school_name')) {
+            dbResumeForge.run("ALTER TABLE personal_info ADD COLUMN school_name TEXT");
+        }
+
+        if (!arrColumnNames.includes('gpa')) {
+            dbResumeForge.run("ALTER TABLE personal_info ADD COLUMN gpa TEXT");
+        }
     });
 }
 

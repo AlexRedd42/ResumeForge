@@ -27,6 +27,8 @@ function fillPersonalForm(objPersonalInfo) {
     document.getElementById('txtEmail').value = objPersonalInfo.email || '';
     document.getElementById('txtPhone').value = objPersonalInfo.phone || '';
     document.getElementById('txtLinkedIn').value = objPersonalInfo.linkedin || '';
+    document.getElementById('txtSchoolName').value = objPersonalInfo.schoolName || '';
+    document.getElementById('txtGpa').value = objPersonalInfo.gpa || '';
 }
 
 async function loadPersonalInfoAsync() {
@@ -44,7 +46,9 @@ async function savePersonalInfoAsync(objEvent) {
         fullName: document.getElementById('txtFullName').value.trim(),
         email: document.getElementById('txtEmail').value.trim(),
         phone: document.getElementById('txtPhone').value.trim(),
-        linkedin: document.getElementById('txtLinkedIn').value.trim()
+        linkedin: document.getElementById('txtLinkedIn').value.trim(),
+        schoolName: document.getElementById('txtSchoolName').value.trim(),
+        gpa: document.getElementById('txtGpa').value.trim()
     };
 
     const objResponse = await fetch('/api/personal-info', {

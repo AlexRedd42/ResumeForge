@@ -34,7 +34,9 @@ objPersonalInfoRouter.get('/', async (req, res) => {
                 full_name AS fullName,
                 email AS email,
                 phone AS phone,
-                linkedin AS linkedin
+                linkedin AS linkedin,
+                school_name AS schoolName,
+                gpa AS gpa
             FROM personal_info
             WHERE id = 1
         `;
@@ -46,7 +48,9 @@ objPersonalInfoRouter.get('/', async (req, res) => {
                 fullName: "",
                 email: "",
                 phone: "",
-                linkedin: ""
+                linkedin: "",
+                schoolName: "",
+                gpa: ""
             });
         }
 
@@ -63,6 +67,8 @@ objPersonalInfoRouter.put('/', async (req, res) => {
         const strEmail = sanitizeString(req.body.email);
         const strPhone = sanitizeString(req.body.phone);
         const strLinkedIn = sanitizeString(req.body.linkedin);
+        const strSchoolName = sanitizeString(req.body.schoolName);
+        const strGpa = sanitizeString(req.body.gpa);
 
         // All fields are optional for drafts, but every submitted value must be a string and valid when present.
         if (!isValidEmail(strEmail)) {
@@ -75,17 +81,19 @@ objPersonalInfoRouter.put('/', async (req, res) => {
 
         const strQuery = `
             INSERT INTO personal_info
-                (id, full_name, email, phone, linkedin)
+                (id, full_name, email, phone, linkedin, school_name, gpa)
             VALUES
-                (1, ?, ?, ?, ?)
+                (1, ?, ?, ?, ?, ?, ?)
             ON CONFLICT(id) DO UPDATE SET
                 full_name = excluded.full_name,
                 email = excluded.email,
                 phone = excluded.phone,
-                linkedin = excluded.linkedin
+                linkedin = excluded.linkedin,
+                school_name = excluded.school_name,
+                gpa = excluded.gpa
         `;
 
-        await runAsync(strQuery, [strFullName, strEmail, strPhone, strLinkedIn]);
+        await runAsync(strQuery, [strFullName, strEmail, strPhone, strLinkedIn, strSchoolName, strGpa]);
 
         return res.status(200).json({ outcome: "success", message: "Personal information saved successfully" });
     } catch (error) {

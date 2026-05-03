@@ -56,7 +56,7 @@ function setImproveButtonLoading(boolIsLoading) {
     }
 
     elImproveButton.disabled = boolIsLoading;
-    elImproveButton.textContent = boolIsLoading ? 'Improving...' : '✨ Improve with AI';
+    elImproveButton.textContent = boolIsLoading ? 'Improving...' : 'Improve with AI';
 }
 
 function showAiComparisonModal(strOriginalContent, strImprovedContent) {

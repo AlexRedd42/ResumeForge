@@ -21,6 +21,18 @@ function isValidDateString(strValue) {
     return !Number.isNaN(objDate.getTime());
 }
 
+function isPresentValue(strValue) {
+    return strValue.toLowerCase() === 'present';
+}
+
+function normalizeEndDate(strValue) {
+    if (isPresentValue(strValue)) {
+        return 'Present';
+    }
+
+    return strValue;
+}
+
 objJobsRouter.get('/', async (req, res) => {
     try {
         const strQuery = `
@@ -48,7 +60,7 @@ objJobsRouter.post('/', async (req, res) => {
         const strCompanyName = sanitizeString(req.body.companyName);
         const strJobTitle = sanitizeString(req.body.jobTitle);
         const strStartDate = sanitizeString(req.body.startDate);
-        const strEndDate = sanitizeString(req.body.endDate);
+        const strEndDate = normalizeEndDate(sanitizeString(req.body.endDate));
 
         // Validate every required field before building the prepared SQL statement.
         if (!strCompanyName || !strJobTitle || !strStartDate) {
@@ -59,7 +71,7 @@ objJobsRouter.post('/', async (req, res) => {
             return res.status(400).json({ outcome: "error", message: "Start date must be a valid date" });
         }
 
-        if (strEndDate && !isValidDateString(strEndDate)) {
+        if (strEndDate && !isPresentValue(strEndDate) && !isValidDateString(strEndDate)) {
             return res.status(400).json({ outcome: "error", message: "End date must be a valid date" });
         }
 
@@ -85,7 +97,7 @@ objJobsRouter.put('/', async (req, res) => {
         const strCompanyName = sanitizeString(req.body.companyName);
         const strJobTitle = sanitizeString(req.body.jobTitle);
         const strStartDate = sanitizeString(req.body.startDate);
-        const strEndDate = sanitizeString(req.body.endDate);
+        const strEndDate = normalizeEndDate(sanitizeString(req.body.endDate));
 
         // PUT requires the primary key and complete editable job values.
         if (!strJobID || !strCompanyName || !strJobTitle || !strStartDate) {
@@ -96,7 +108,7 @@ objJobsRouter.put('/', async (req, res) => {
             return res.status(400).json({ outcome: "error", message: "Start date must be a valid date" });
         }
 
-        if (strEndDate && !isValidDateString(strEndDate)) {
+        if (strEndDate && !isPresentValue(strEndDate) && !isValidDateString(strEndDate)) {
             return res.status(400).json({ outcome: "error", message: "End date must be a valid date" });
         }
 

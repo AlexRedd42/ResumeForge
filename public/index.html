@@ -12,6 +12,7 @@
 
     <!-- Bootstrap is intentionally loaded from a local vendor folder to avoid CDN usage. -->
     <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/theme.css">
     <link rel="stylesheet" href="/vendor/quill/quill.snow.css">
     <link rel="stylesheet" href="/css/print.css">
     <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js" defer></script>
@@ -27,7 +28,7 @@
     <header class="bg-dark text-white no-print">
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark" aria-label="Primary navigation">
             <div class="container-fluid">
-                <a class="navbar-brand fw-bold d-flex align-items-center" href="#dashboard" aria-label="ResumeForge dashboard">
+                <a class="navbar-brand fw-bold d-flex align-items-center" href="#builder" aria-label="ResumeForge builder">
                     <span class="border border-light rounded px-2 py-1 me-2" aria-hidden="true">RF</span>
                     ResumeForge
                 </a>
@@ -36,9 +37,6 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navMainMenu">
                     <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#dashboard" data-view="dashboard">Dashboard</a>
-                        </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#jobs" data-view="jobs">Jobs</a>
                         </li>
@@ -49,7 +47,7 @@
                             <a class="nav-link" href="#personal" data-view="personal">Personal Info</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#builder" data-view="builder">Builder</a>
+                            <a class="nav-link active" href="#builder" data-view="builder">Builder</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#preview" data-view="preview">Preview</a>
@@ -61,17 +59,6 @@
     </header>
 
     <main class="container-fluid flex-grow-1 py-4" id="mainContent" tabindex="-1">
-        <section class="row justify-content-center" id="sectionDashboard" data-section="dashboard" aria-labelledby="headingDashboard">
-            <div class="col-12 col-lg-10">
-                <div class="card">
-                    <div class="card-body">
-                        <h1 class="h3" id="headingDashboard">ResumeForge Dashboard</h1>
-                        <p class="mb-0">Use the navigation to manage resume content and prepare a tailored resume.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
         <section class="row justify-content-center d-none" id="sectionJobs" data-section="jobs" aria-labelledby="headingJobs">
             <div class="col-12 col-xl-10">
                 <div class="card">
@@ -104,7 +91,7 @@
                                         </div>
                                         <div class="col-12 col-md-6 mb-3">
                                             <label class="form-label" for="dtEndDate">End Date</label>
-                                            <input class="form-control" type="date" id="dtEndDate" name="endDate" aria-label="End date">
+                                            <input class="form-control" type="text" id="dtEndDate" name="endDate" aria-label="End date" placeholder="YYYY-MM-DD or Present">
                                         </div>
                                     </div>
                                     <button class="btn btn-primary" type="submit">Save Job</button>
@@ -125,7 +112,7 @@
                                             <div id="divJobDetailEditor" role="textbox" aria-labelledby="lblJobDetailContent" aria-describedby="pJobDetailHelp" aria-multiline="true"></div>
                                         </div>
                                         <button class="btn btn-primary" type="submit" id="btnSaveJobDetail">Add Responsibility</button>
-                                        <button class="btn btn-outline-primary" type="button" id="btnImproveJobDetail" aria-label="Improve responsibility with AI">✨ Improve with AI</button>
+                                        <button class="btn btn-outline-primary" type="button" id="btnImproveJobDetail" aria-label="Improve responsibility with AI">Improve with AI</button>
                                         <button class="btn btn-outline-secondary d-none" type="button" id="btnCancelJobDetailEdit">Cancel Edit</button>
                                     </form>
                                     <ul class="list-group" id="ulJobDetailsList" aria-live="polite"></ul>
@@ -199,6 +186,14 @@
                                     <label class="form-label" for="txtLinkedIn">LinkedIn URL</label>
                                     <input class="form-control" type="url" id="txtLinkedIn" name="linkedin" aria-label="LinkedIn URL">
                                 </div>
+                                <div class="col-12 col-md-6 mb-3">
+                                    <label class="form-label" for="txtSchoolName">School Name</label>
+                                    <input class="form-control" type="text" id="txtSchoolName" name="schoolName" aria-label="School name">
+                                </div>
+                                <div class="col-12 col-md-6 mb-3">
+                                    <label class="form-label" for="txtGpa">GPA</label>
+                                    <input class="form-control" type="text" id="txtGpa" name="gpa" aria-label="GPA">
+                                </div>
                             </div>
                             <button class="btn btn-primary" type="submit">Save Personal Information</button>
                         </form>
@@ -257,7 +252,8 @@
     </main>
 
     <footer class="bg-dark text-white text-center py-3 mt-auto no-print">
-        <p class="mb-0">ResumeForge</p>
+        <p class="mb-2">ResumeForge</p>
+        <button class="btn btn-outline-light btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#modalSpecialThanks" aria-label="Open special thanks modal">Special Thanks</button>
     </footer>
 
     <div class="modal fade" id="modalAiImprovement" tabindex="-1" aria-labelledby="headingAiImprovement" aria-describedby="pAiImprovementDescription">
@@ -283,6 +279,31 @@
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
                     <button class="btn btn-primary" type="button" id="btnAcceptAiImprovement">Accept Improvement</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalSpecialThanks" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="headingSpecialThanks" aria-describedby="pSpecialThanksDescription">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title h5" id="headingSpecialThanks">Special Thanks</h2>
+                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close special thanks"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="pSpecialThanksDescription">This project was built using the following libraries:</p>
+                    <ul>
+                        <li>@google/genai</li>
+                        <li>bootstrap</li>
+                        <li>dotenv</li>
+                        <li>express</li>
+                        <li>quill</li>
+                        <li>sqlite3</li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
